@@ -1,0 +1,10 @@
+Calculadora de Médias; // Average Calculator;
+
+Em breve farei updates neste projeto adicionando mais funções :);
+- Apagar um aluno da tabela;
+- Alterar um nota específica;
+- Adicionar os dados no Local Storage;
+
+O objetivo é criar um tabela com o nome do aluno e quantidade de notas que o usuário quiser, desta forma, o código irá gerar a média automaticamente;
+
+Caso o usuário queira adicionar mais notas em um aluno específico, basta digitar o nome dele novamente;
