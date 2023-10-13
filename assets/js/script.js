@@ -18,7 +18,7 @@ function pegarNotas(){
     }
     zerarInput();
     console.log(alunos);
-    adicionarTabela();
+    adicionarTabela(alunos);
 };
 
 function zerarInput(){
@@ -41,15 +41,20 @@ function media(notas){
 const tabela = document.querySelector('#tabela');
 const headTabela = document.querySelector('#headTabela');
 
-function adicionarTabela(){
+function adicionarTabela(alunos){
     let tabela = document.getElementById("tabela");
-    tabela.innerHTML = "<tr><td>Nome do Aluno</td><td>Notas</td><td>Média</td></td>";
+    tabela.innerHTML = "<tr><td>Nome do Aluno</td><td>Notas</td><td>Média</td><td>Apagar</td></tr>";
 
     alunos.forEach(function(aluno) {
         let mediaA = media(aluno.notas);
-        var linha = "<tr><td>" + aluno.nome + "</td><td>" + aluno.notas.join(", ") + "</td><td>" + mediaA.toFixed(2) + "</td></tr>";
+        var linha = "<tr><td>" + aluno.nome + "</td><td>" + aluno.notas.join(", ") + "</td><td>" + mediaA.toFixed(2) + "</td><td>"+ "<button>" + botaoApagar() + "</button>" + "</td></tr>";
         tabela.innerHTML += linha;
     });
+};
+
+function botaoApagar(){
+    let valorInterno = 'Apagar';
+    return valorInterno;
 };
 
 function validarCampos(){
@@ -78,11 +83,45 @@ function desabilitarInput(sN){
     };
 };
 
+function salvarAlunos(){
+    let alunosJSON = JSON.stringify(alunos);
+    localStorage.setItem('alunos', alunosJSON);
+};
+
+function carregarAlunos(){
+    let localAlunos = localStorage.getItem('alunos');
+    alunos = JSON.parse(localAlunos);
+
+    alunos.forEach(function(valorA){
+        adicionarTabela(alunos);
+    });
+};
+
+try{
+    carregarAlunos();
+}catch(err){
+    console.log('Nenhum aluno salvo.');
+    if(!alunos){
+        alunos = [];
+    };
+};
+
+function classeApagar(){
+    let tabela = document.getElementById("tabela");
+    let classeApagar = tabela.querySelectorAll('button');
+    classeApagar.forEach(function(elemento){
+        elemento.setAttribute('class', 'btn btn-danger form-control');
+    });
+};
+
+classeApagar();
+
 document.addEventListener('keypress', function(e){
     if(e.keyCode === 13){
         if(!validarCampos()){
             pegarNotas();
-            salvarTitulos();
+            salvarAlunos();
+            classeApagar();
         }
     }
 });
@@ -90,12 +129,31 @@ document.addEventListener('keypress', function(e){
 enviar.addEventListener('click', function(){
     if(!validarCampos()){
         pegarNotas();
-        salvarTitulos();
+        salvarAlunos();
+        classeApagar();
     };
 });
 
 prox.addEventListener('click', function(){
     desabilitarInput(false);
 });
+
+document.addEventListener('click', function(e){
+    let el = e.target;
+
+    if(el.innerHTML == 'Apagar'){
+        let elementoPai = el.parentElement.parentElement
+        let nomeAluno = elementoPai.querySelector('td').textContent;
+
+        alunos = alunos.filter(function(aluno){
+            return aluno.nome !== nomeAluno;
+        });
+
+        elementoPai.remove();
+
+        salvarAlunos();
+    };
+});
+
 
 
